@@ -127,8 +127,9 @@ export default {
 .calculator {
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   max-width: 550px;
+  padding: 10px;
 
   @media (min-width: 992px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
