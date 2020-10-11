@@ -31,7 +31,7 @@ In this example, which was Tetsu Kasuya’s winning brew, he used the following:
 ### 40%
 Tetsu wanted to highlight the sweetness of the coffee, so used less water in the first pour than in the second.
 
-|             |           |
+| Step        | Weight    |
 |:------------|:----------|
 | Pour 1      | 50 grams  |
 | Pour 2      | 70 grams  |
@@ -39,7 +39,7 @@ Tetsu wanted to highlight the sweetness of the coffee, so used less water in the
 
 ### 60%
 
-|             |           |
+| Step        | Weight    |
 |:------------|:----------|
 | Pour 3      | 60 grams  |
 | Pour 4      | 60 grams  |
