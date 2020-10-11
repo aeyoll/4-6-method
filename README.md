@@ -1,4 +1,4 @@
-# Tetsu Kasuya 4:6 Brewing Method for V60
+# Tetsu Kasuya 4:6 Brewing Method for V60 / Calculator
 
 (Description taken from [https://eightysevenplus.com/tetsu-kasuya-46-method/](https://eightysevenplus.com/tetsu-kasuya-46-method/))
 
