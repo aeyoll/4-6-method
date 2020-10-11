@@ -13,14 +13,18 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 * {
   box-sizing: border-box;
 }
 
 html {
-  background: #f6ede1 url('assets/v60.webp') no-repeat right center;
+  background-color: #f6ede1;
   min-height: 100vh;
+
+  @media (min-width: 992px) {
+    background: #f6ede1 url('assets/v60.webp') no-repeat right center;
+  }
 }
 
 body {
