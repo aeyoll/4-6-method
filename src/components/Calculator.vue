@@ -84,19 +84,19 @@
             <td>{{step1 + step2 + step3}}ml</td>
           </tr>
           <tr v-if="step4 > 0">
-            <td>2m10s</td>
+            <td>2m15s</td>
             <td>{{step4}}ml</td>
             <td>{{step1 + step2 + step3 + step4}}ml</td>
           </tr>
           <tr v-if="step5 > 0">
-            <td>2m45s</td>
+            <td>3m00s</td>
             <td>{{step5}}ml</td>
             <td>{{step1 + step2 + step3 + step4 + step5}}ml</td>
           </tr>
           <tr>
-            <td v-if="strength == 3">3m30s</td>
-            <td v-if="strength == 2">2m45s</td>
-            <td v-if="strength == 1">2m10s</td>
+            <td v-if="strength == 3">3m45s</td>
+            <td v-if="strength == 2">3m00s</td>
+            <td v-if="strength == 1">2m15s</td>
             <td></td>
             <td>Remove the dripper</td>
           </tr>
