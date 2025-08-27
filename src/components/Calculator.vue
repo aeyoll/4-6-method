@@ -4,6 +4,39 @@
       <h2 class="title">Parameters</h2>
       <label for="coffee">Coffee weight:</label>
       <input type="number" v-model="coffee" id="coffee" class="form-control" min="10" max="60">
+      <div class="taste-controls">
+        <label>Taste controls:</label>
+        <div class="slider-row">
+          <div class="slider-title">
+            <span>Brighter</span>
+            <span>Sweeter</span>
+          </div>
+          <input
+            type="range"
+            class="slider-slider"
+            min="0.3"
+            max="0.7"
+            step="any"
+            v-model.number="taste"
+          >
+        </div>
+        <div class="slider-row">
+          <div class="slider-title">
+            <span>Light</span>
+            <span>Medium</span>
+            <span>Strong</span>
+          </div>
+          <input
+            class="slider-slider"
+            type="range"
+            id="strength-slider"
+            min="1"
+            max="3"
+            step="1"
+            v-model="strength"
+          >
+        </div>
+      </div>
     </div>
 
     <div class="well">
@@ -50,18 +83,20 @@
             <td>{{step3}}ml</td>
             <td>{{step1 + step2 + step3}}ml</td>
           </tr>
-          <tr>
+          <tr v-if="step4 > 0">
             <td>2m10s</td>
             <td>{{step4}}ml</td>
             <td>{{step1 + step2 + step3 + step4}}ml</td>
           </tr>
-          <tr>
+          <tr v-if="step5 > 0">
             <td>2m45s</td>
             <td>{{step5}}ml</td>
             <td>{{step1 + step2 + step3 + step4 + step5}}ml</td>
           </tr>
           <tr>
-            <td>3m30s</td>
+            <td v-if="strength == 3">3m30s</td>
+            <td v-if="strength == 2">2m45s</td>
+            <td v-if="strength == 1">2m10s</td>
             <td></td>
             <td>Remove the dripper</td>
           </tr>
@@ -93,27 +128,51 @@ export default {
   name: 'Calculator',
   data() {
     return {
-      coffee: 20
+      coffee: 20,
+      taste: 5/12,
+      strength: 3,
+    }
+  },
+  watch: {
+    taste: {
+      immediate: true,
+      handler() {
+        // Force a re-render of the slider to fix positioning issue
+        this.$nextTick(() => {
+          this.$forceUpdate();
+        });
+      }
     }
   },
   computed: {
     water() {
       return this.coffee * 15;
     },
+
+    firstPartWater() {
+      return Math.round(this.water * 0.4);
+    },
+    secondPartWater() {
+      return this.water - this.firstPartWater;
+    },
+
+    // 4:6 method: first 40% of water is for first two pours:
     step1() {
-      return this.water / 6;
+      return Math.round(this.firstPartWater * this.taste);
     },
     step2() {
-      return this.water / (300 / 70);
+      return this.firstPartWater - this.step1;
     },
+
+    // 4:6 method: rest 60% of water is distributed between 1-3 pours depending on desired strength:
     step3() {
-      return this.water / 5;
+      return Math.round(this.secondPartWater / this.strength);
     },
     step4() {
-      return this.water / 5;
+      return this.strength > 1 ? Math.round(this.secondPartWater / this.strength) : 0;
     },
     step5() {
-      return this.water / 5;
+      return this.secondPartWater - this.step3 - this.step4;
     },
   }
 }
@@ -185,4 +244,24 @@ label {
   padding: 8px 12px;
   width: 100%;
 }
+
+.taste-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.slider-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.slider-slider {
+  width: 100%;
+}
+
+.taste-controls {
+  padding-top: 20px;
+}
+
 </style>
