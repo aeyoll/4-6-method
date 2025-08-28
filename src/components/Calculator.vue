@@ -14,8 +14,8 @@
           <input
             type="range"
             class="slider-slider"
-            min="0.3"
-            max="0.7"
+            min="0.4166666667"
+            max="0.5833333333"
             step="any"
             v-model.number="taste"
           >
@@ -129,7 +129,7 @@ export default {
   data() {
     return {
       coffee: 20,
-      taste: 5/12,
+      taste: 6/12,
       strength: 3,
     }
   },
