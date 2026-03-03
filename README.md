@@ -18,7 +18,7 @@ Coffee should be ground coarsely for this method.
 
 The initial 40% of your water is divided into two pours. Using more water in the first pour, the acidity will be stronger. Using less water in the first pour, the overall sweetness will be stronger.
 
-The final 60% of the total water will affect the strength of the overall brew. For a stronger coffee, use fewer pours. For a more diluted coffee, use more.
+The final 60% of the total water will affect the strength of the overall brew. For a stronger coffee, split this section into more pours. For a lighter coffee, use fewer pours.
 
 ### Tetsu Kasuya’s Winning Brew
 
