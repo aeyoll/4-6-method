@@ -1,5 +1,7 @@
 # Tetsu Kasuya 4:6 Brewing Method for V60 / Calculator
 
+This is a fork of [aeyoll/4-6-method](https://github.com/aeyoll/4-6-method) by aeyoll.
+
 (Description taken from [https://eightysevenplus.com/tetsu-kasuya-46-method/](https://eightysevenplus.com/tetsu-kasuya-46-method/))
 
 ## v60 brew method

@@ -143,6 +143,8 @@
         <li>The role of the first pour is to moisten the grounds.</li>
         <li>Do not make the next pour until the water completely drips through.</li>
       </ul>
+
+      <p class="credit">Based on <a href="https://github.com/aeyoll/4-6-method" target="_blank" rel="noopener">aeyoll's 4:6 calculator</a>.</p>
     </div>
   </div>
 </template>
@@ -341,6 +343,16 @@ label {
   display: flex;
   gap: 8px;
   margin-top: 6px;
+}
+
+.credit {
+  font-size: 13px;
+  color: #888;
+  margin-top: 20px;
+
+  a {
+    color: #888;
+  }
 }
 
 .strength-btn {
