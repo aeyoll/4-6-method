@@ -3,7 +3,9 @@
     <div class="well">
       <h2 class="title">Parameters</h2>
       <label for="coffee">Coffee weight:</label>
-      <input type="number" v-model="coffee" id="coffee" class="form-control" min="10" max="60">
+      <input type="number" v-model.number="coffee" id="coffee" class="form-control" min="10" max="60" step="0.1">
+      <label for="ratio" style="margin-top: 10px;">Water ratio:</label>
+      <input type="number" v-model.number="ratio" id="ratio" class="form-control" min="1" max="30" step="0.1">
       <div class="taste-controls">
         <label>Taste controls:</label>
         <div class="slider-row">
@@ -11,30 +13,40 @@
             <span>Brighter</span>
             <span>Sweeter</span>
           </div>
-          <input
-            type="range"
-            class="slider-slider"
-            min="0.4166666667"
-            max="0.5833333333"
-            step="any"
-            v-model.number="taste"
-          >
+          <div class="slider-with-input">
+            <input
+              type="range"
+              class="slider-slider"
+              min="0.4166666667"
+              max="0.5833333333"
+              step="0.0001"
+              v-model.number="taste"
+            >
+          </div>
+          <div class="pour-split">
+            <span>First split:</span>
+            <input
+              type="number"
+              class="taste-number"
+              :value="pour1Pct"
+              @change="onPour1Input"
+              min="41.7"
+              max="58.3"
+              step="0.1"
+            >
+            <span>%</span>
+          </div>
         </div>
         <div class="slider-row">
-          <div class="slider-title">
-            <span>Light</span>
-            <span>Medium</span>
-            <span>Strong</span>
+          <label>Strength:</label>
+          <div class="button-group">
+            <button
+              v-for="s in strengthOptions"
+              :key="s.value"
+              :class="['strength-btn', { active: strength === s.value }]"
+              @click="strength = s.value"
+            >{{ s.label }}</button>
           </div>
-          <input
-            class="slider-slider"
-            type="range"
-            id="strength-slider"
-            min="1"
-            max="3"
-            step="1"
-            v-model="strength"
-          >
         </div>
       </div>
     </div>
@@ -54,6 +66,18 @@
           <td>Temperature</td>
           <td>93°c</td>
         </tr>
+        <tr>
+          <td>Water ratio</td>
+          <td>1:{{ratio}}</td>
+        </tr>
+        <tr>
+          <td>First split</td>
+          <td>{{pour1Pct}}%</td>
+        </tr>
+        <tr>
+          <td>Strength</td>
+          <td>{{strengthLabel}}</td>
+        </tr>
       </table>
     </div>
 
@@ -63,7 +87,7 @@
         <thead>
           <tr>
             <th>Total time</th>
-            <th>Water amount pound</th>
+            <th>Water amount pour</th>
             <th>Total Water amount</th>
           </tr>
         </thead>
@@ -76,22 +100,22 @@
           <tr>
             <td>45s</td>
             <td>{{step2}}ml</td>
-            <td>{{step1 + step2}}ml</td>
+            <td>{{r(step1 + step2)}}ml</td>
           </tr>
           <tr>
             <td>1m30s</td>
             <td>{{step3}}ml</td>
-            <td>{{step1 + step2 + step3}}ml</td>
+            <td>{{r(step1 + step2 + step3)}}ml</td>
           </tr>
           <tr v-if="step4 > 0">
             <td>2m15s</td>
             <td>{{step4}}ml</td>
-            <td>{{step1 + step2 + step3 + step4}}ml</td>
+            <td>{{r(step1 + step2 + step3 + step4)}}ml</td>
           </tr>
           <tr v-if="step5 > 0">
             <td>3m00s</td>
             <td>{{step5}}ml</td>
-            <td>{{step1 + step2 + step3 + step4 + step5}}ml</td>
+            <td>{{r(step1 + step2 + step3 + step4 + step5)}}ml</td>
           </tr>
           <tr>
             <td v-if="strength == 3">3m45s</td>
@@ -115,10 +139,12 @@
 
       <h2>Tips</h2>
       <ul>
-        <li>Choose your preferred grind size. (Adjust the coarseness so that water atmost completely drips within this total time.)</li>
+        <li>Choose your preferred grind size. (Adjust the coarseness so that water almost completely drips within this total time.)</li>
         <li>The role of the first pour is to moisten the grounds.</li>
-        <li>Do not make the next pour untit the water completely drips through.</li>
+        <li>Do not make the next pour until the water completely drips through.</li>
       </ul>
+
+      <p class="credit">Based on <a href="https://github.com/aeyoll/4-6-method" target="_blank" rel="noopener">aeyoll's 4:6 calculator</a>.</p>
     </div>
   </div>
 </template>
@@ -129,50 +155,65 @@ export default {
   data() {
     return {
       coffee: 20,
-      taste: 6/12,
+      ratio: 15.0,
+      taste: 0.4166666667,
       strength: 3,
+      strengthOptions: [
+        { label: 'Light', value: 1 },
+        { label: 'Medium', value: 2 },
+        { label: 'Strong', value: 3 },
+      ],
     }
   },
-  watch: {
-    taste: {
-      immediate: true,
-      handler() {
-        // Force a re-render of the slider to fix positioning issue
-        this.$nextTick(() => {
-          this.$forceUpdate();
-        });
+  methods: {
+    r(val) {
+      return Math.round(val * 10) / 10;
+    },
+    onPour1Input(e) {
+      const pct = parseFloat(e.target.value);
+      if (!isNaN(pct)) {
+        const p1 = Math.min(58.3, Math.max(41.7, pct));
+        this.taste = (100 - p1) / 100;
       }
-    }
+    },
   },
   computed: {
+    strengthLabel() {
+      return { 1: 'Light', 2: 'Medium', 3: 'Strong' }[this.strength];
+    },
+    pour1Pct() {
+      return Math.round((1 - this.taste) * 1000) / 10;
+    },
+    pour2Pct() {
+      return Math.round((100 - this.pour1Pct) * 10) / 10;
+    },
+
     water() {
-      return this.coffee * 15;
+      return this.r(this.coffee * this.ratio);
     },
 
     firstPartWater() {
-      return Math.round(this.water * 0.4);
+      return this.r(this.water * 0.4);
     },
     secondPartWater() {
-      return this.water - this.firstPartWater;
+      return this.r(this.water - this.firstPartWater);
     },
 
-    // 4:6 method: first 40% of water is for first two pours:
     step1() {
-      return Math.round(this.firstPartWater * (1 - this.taste));
+      return this.r(this.firstPartWater * (1 - this.taste));
     },
     step2() {
-      return this.firstPartWater - this.step1;
+      return this.r(this.firstPartWater - this.step1);
     },
 
-    // 4:6 method: rest 60% of water is distributed between 1-3 pours depending on desired strength:
     step3() {
-      return Math.round(this.secondPartWater / this.strength);
+      return this.r(this.secondPartWater / this.strength);
     },
     step4() {
-      return this.strength > 1 ? Math.round(this.secondPartWater / this.strength) : 0;
+      return this.strength > 1 ? this.r(this.secondPartWater / this.strength) : 0;
     },
     step5() {
-      return this.secondPartWater - this.step3 - this.step4;
+      return this.r(this.secondPartWater - this.step3 - this.step4);
     },
   }
 }
@@ -216,13 +257,22 @@ export default {
 }
 
 table {
-  text-align: right;
   width: 100%;
+  table-layout: fixed;
 }
 
 td, th {
   border-bottom: 1px solid #eee;
   padding: 4px 20px;
+}
+
+td:first-child, th:first-child {
+  text-align: left;
+  white-space: nowrap;
+}
+
+td:last-child, th:last-child {
+  text-align: right;
 }
 
 .title {
@@ -243,12 +293,14 @@ label {
   display: inline-block;
   padding: 8px 12px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .taste-controls {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-top: 20px;
 }
 
 .slider-title {
@@ -256,12 +308,71 @@ label {
   justify-content: space-between;
 }
 
+.slider-with-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .slider-slider {
-  width: 100%;
+  flex: 1;
 }
 
-.taste-controls {
-  padding-top: 20px;
+.pour-split {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  margin-top: 4px;
 }
 
+.taste-number {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 4px 6px;
+  width: 70px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.pour2-display {
+  font-weight: 600;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.credit {
+  font-size: 13px;
+  color: #888;
+  margin-top: 20px;
+
+  a {
+    color: #888;
+  }
+}
+
+.strength-btn {
+  flex: 1;
+  padding: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: #e8e8e8;
+  }
+
+  &.active {
+    background: #333;
+    color: #fff;
+    border-color: #333;
+  }
+}
 </style>
